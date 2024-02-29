@@ -1,0 +1,100 @@
+package hanlder
+
+import (
+	"net/http"
+
+	"{{AppName}}/{{AppRoot}}/{{SingularLowerName}}/application"
+	"{{AppName}}/{{AppRoot}}/{{SingularLowerName}}/domain/entity"
+	"{{AppName}}/{{AppRoot}}/core/logger"
+	utilQuery "{{AppName}}/{{AppRoot}}/core/pkg/query"
+	"{{AppName}}/{{AppRoot}}/core/pkg/utils"
+	"go.uber.org/zap"
+)
+
+func GetCategories(w http.ResponseWriter, r *http.Request) {
+	// Implement GetCategories handler
+	var categories []*entity.ResponseCategory
+	categories, err := application.GetCategories(r)
+	if err != nil {
+		logger.Error("Failed to fetch categories", zap.Error(err))
+		utils.WriteJSONError(w, http.StatusInternalServerError, "Failed to fetch categories")
+		return
+	}
+	// Write response
+	utils.WriteJSONResponse(w, http.StatusOK, map[string]interface{}{
+		"message":    "Categories fetched successfully",
+		"categories": categories,
+	})
+}
+
+func CreateCategory(w http.ResponseWriter, r *http.Request) {
+	// Implement CreateCategory handler
+	var newCategory entity.Category
+
+	pareErr := utilQuery.BodyParse(&newCategory, w, r, true) // Parse request body and validate it
+	if pareErr != nil {
+		return
+	}
+
+	// Call the CreateCategory function to create the category
+	_, err := application.CreateCategory(&newCategory)
+	if err != nil {
+		utils.WriteJSONError(w, http.StatusInternalServerError, "Failed to create category")
+		return
+	}
+
+	// Write response
+	utils.WriteJSONResponse(w, http.StatusCreated, map[string]interface{}{
+		"message": "Category created successfully",
+	})
+}
+
+func GetCategory(w http.ResponseWriter, r *http.Request) {
+	// Implement GetUserByID handler
+	var category *entity.ResponseCategory
+	category, err := application.GetCategory(r)
+	if err != nil {
+		utils.WriteJSONError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	// Write response
+	utils.WriteJSONResponse(w, http.StatusOK, map[string]interface{}{
+		"message":    "Category fetched successfully",
+		"categories": category,
+	})
+
+}
+
+func UpdateCategory(w http.ResponseWriter, r *http.Request) {
+	// Implement UpdateCategory handler
+	var updateCategory entity.UpdateCategory
+	pareErr := utilQuery.BodyParse(&updateCategory, w, r, true) // Parse request body and validate it
+	if pareErr != nil {
+		return
+	}
+
+	// Call the CreateCategory function to create the category
+	_, err := application.UpdateCategory(r, &updateCategory)
+	if err != nil {
+		utils.WriteJSONError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	// Write response
+	utils.WriteJSONResponse(w, http.StatusCreated, map[string]interface{}{
+		"message": "Category updated successfully",
+	})
+}
+
+func DeleteCategory(w http.ResponseWriter, r *http.Request) {
+	// Implement DeleteCategory handler
+	err := application.DeleteCategory(r)
+	if err != nil {
+		utils.WriteJSONError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	// Write response
+	utils.WriteJSONResponse(w, http.StatusOK, map[string]interface{}{
+		"message": "Category deleted successfully",
+	})
+}

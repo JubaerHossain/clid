@@ -1,0 +1,114 @@
+package application
+
+import (
+	"fmt"
+	"net/http"
+	"strconv"
+
+	"{{AppName}}/{{AppRoot}}/{{SingularLowerName}}/domain/entity"
+	"{{AppName}}/{{AppRoot}}/{{SingularLowerName}}/infrastructure/persistence"
+)
+
+func GetCategories(r *http.Request) ([]*entity.ResponseCategory, error) {
+	// Call repository to get all users
+	queryValues := r.URL.Query()
+	repo, err := persistence.NewCategoryRepository()
+	if err != nil {
+		return nil, err
+	}
+	categories, userErr := repo.GetCategories(queryValues)
+	if userErr != nil {
+		return nil, userErr
+	}
+	return categories, nil
+}
+
+// CreateCategory creates a new category
+func CreateCategory(category *entity.Category) (*entity.Category, error) {
+	// Add any validation or business logic here before creating the category
+
+	repo, err := persistence.NewCategoryRepository()
+	if err != nil {
+		return nil, err
+	}
+
+	category, err2 := repo.CreateCategory(category)
+	if err2 != nil {
+		return nil, err2
+	}
+	return category, nil
+}
+
+// GetUserByID retrieves a user by ID
+func GetCategory(r *http.Request) (*entity.ResponseCategory, error) {
+	// Call repository to get user by ID
+	repo, err := persistence.NewCategoryRepository()
+	if err != nil {
+		return nil, err
+	}
+	id, err := strconv.ParseUint(r.PathValue("id"), 10, 64)
+	if err != nil {
+		return nil, fmt.Errorf("invalid category ID")
+	}
+	category, categoryErr := repo.GetCategory(uint(id))
+	if categoryErr != nil {
+		return nil, categoryErr
+	}
+	return category, nil
+}
+func GetCategoryByID(r *http.Request) (*entity.Category, error) {
+	// Call repository to get user by ID
+	repo, err := persistence.NewCategoryRepository()
+	if err != nil {
+		return nil, err
+	}
+	id, err := strconv.ParseUint(r.PathValue("id"), 10, 64)
+	if err != nil {
+		return nil, fmt.Errorf("invalid category ID")
+	}
+	category, categoryErr := repo.GetCategoryByID(uint(id))
+	if categoryErr != nil {
+		return nil, categoryErr
+	}
+	return category, nil
+}
+
+// UpdateUser updates an existing user
+func UpdateCategory(r *http.Request, category *entity.UpdateCategory) (*entity.Category, error) {
+	// Call repository to update category
+
+	old, err := GetCategoryByID(r)
+	if err != nil {
+		return nil, err
+	}
+	repo, err := persistence.NewCategoryRepository()
+	if err != nil {
+		return nil, err
+	}
+
+	updateCategory, err2 := repo.UpdateCategory(old, category)
+	if err2 != nil {
+		return nil, err2
+	}
+	return updateCategory, nil
+}
+
+// DeleteCategory deletes a user by ID
+func DeleteCategory(r *http.Request) error {
+	// Call repository to delete user
+	user, err := GetCategoryByID(r)
+	if err != nil {
+		return err
+	}
+	repo, err := persistence.NewCategoryRepository()
+	if err != nil {
+		return err
+	}
+
+	err2 := repo.DeleteCategory(user)
+	if err2 != nil {
+		return err2
+	}
+
+	return nil
+}

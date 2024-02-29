@@ -1,0 +1,21 @@
+package hanlder
+
+import (
+	"net/http"
+
+	"{{AppName}}/{{AppRoot}}/core/middleware"
+)
+
+// SetupUserRoutes initializes and returns the HTTP router with user routes.
+func SetupCategoryRoutes(router *http.ServeMux) *http.ServeMux {
+
+	// auth routes
+
+	router.Handle("GET /categories", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(GetCategories))))
+	router.Handle("POST /categories", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(CreateCategory))))
+	router.Handle("GET /categories/{id}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(GetCategory))))
+	router.Handle("PUT /categories/{id}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(UpdateCategory))))
+	router.Handle("DELETE /categories/{id}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(DeleteCategory))))
+
+	return router
+}

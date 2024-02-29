@@ -1,0 +1,117 @@
+package persistence
+
+import (
+	"fmt"
+
+	"{{AppName}}/{{AppRoot}}/{{SingularLowerName}}/domain/entity"
+	"{{AppName}}/{{AppRoot}}/{{SingularLowerName}}/domain/entity"
+	"{{AppName}}/{{AppRoot}}/core/database"
+	"{{AppName}}/{{AppRoot}}/core/logger"
+	utilQuery "{{AppName}}/{{AppRoot}}/core/pkg/query"
+	"go.uber.org/zap"
+	"gorm.io/gorm"
+)
+
+type CategoryRepositoryImpl struct {
+	// Add fields for database connection or any other dependencies
+	db *gorm.DB
+}
+
+func NewCategoryRepository() (repository.CategoryRepository, error) {
+	conn, err := database.ConnectDB()
+	if err != nil {
+		logger.Error("Failed to connect to database", zap.Error(err))
+		return nil, err
+	}
+	return &CategoryRepositoryImpl{db: conn}, nil
+}
+
+// GetCategories returns all categories from the database
+func (r *CategoryRepositoryImpl) GetCategories(queryValues map[string][]string) ([]*entity.ResponseCategory, error) {
+	// Implement logic to get all categories
+	users := []*entity.ResponseCategory{}
+	query := r.db.Model(&entity.Category{})
+
+	// Filter by name
+	if names, ok := queryValues["name"]; ok && len(names) > 0 {
+		query = query.Where("name LIKE ?", "%"+names[0]+"%")
+	}
+
+	// Filter by status
+	if statuses, ok := queryValues["status"]; ok && len(statuses) > 0 {
+		query = query.Where("status IN (?)", statuses)
+	}
+
+	// Filter by date
+	if dates, ok := queryValues["date"]; ok && len(dates) > 0 {
+		query = query.Where("created_at >= ?", dates[0])
+	}
+
+	// Filter by date range
+	if dateRange, ok := queryValues["date_range"]; ok && len(dateRange) > 0 {
+		query = query.Where("created_at BETWEEN ? AND ?", dateRange[0], dateRange[1])
+	}
+	// orderBy
+	if conditions, ok := queryValues["orderBy"]; ok && len(conditions) > 0 {
+		query = query.Order(conditions[0])
+
+	} else {
+		query = query.Order("created_at desc")
+	} // Filter
+	paginate := utilQuery.Pagination(query, queryValues) // Pagination
+	if err := paginate.Find(&users).Error; err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
+// GetCategoryByID returns a category by ID from the database
+func (r *CategoryRepositoryImpl) GetCategoryByID(categoryID uint) (*entity.Category, error) {
+	// Implement logic to get category by ID
+	category := &entity.Category{}
+	if err := r.db.First(&category, categoryID).Error; err != nil {
+		return nil, fmt.Errorf("category not found")
+	}
+	return category, nil
+}
+func (r *CategoryRepositoryImpl) GetCategory(categoryID uint) (*entity.ResponseCategory, error) {
+	// Implement logic to get category by ID
+	category := &entity.ResponseCategory{}
+	query := r.db.Model(&entity.Category{}).Where("id = ?", categoryID)
+	if err := query.First(&category).Error; err != nil {
+		return nil, fmt.Errorf("category not found")
+	}
+	return category, nil
+}
+
+// CreateCategory saves a new category to the database
+func (r *CategoryRepositoryImpl) CreateCategory(category *entity.Category) (*entity.Category, error) {
+	// Implement logic to save category
+	if err := r.db.Create(category).Error; err != nil {
+		return nil, err
+	}
+	return category, nil
+}
+
+// UpdateCategory updates a category in the database
+func (r *CategoryRepositoryImpl) UpdateCategory(oldCategory *entity.Category, category *entity.UpdateCategory) (*entity.Category, error) {
+	if err := r.db.Model(&oldCategory).Updates(category).Error; err != nil {
+		return nil, err
+	}
+	updateCategory := &entity.Category{}
+
+	if err := r.db.First(&updateCategory, oldCategory.ID).Error; err != nil {
+		return nil, err
+	}
+	return updateCategory, nil
+}
+
+// DeleteCategory deletes a category from the database
+
+func (r *CategoryRepositoryImpl) DeleteCategory(category *entity.Category) error {
+	// Implement logic to delete category
+	if err := r.db.Delete(category).Error; err != nil {
+		return err
+	}
+	return nil
+}
