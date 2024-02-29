@@ -51,7 +51,7 @@ func createFolders(fs afero.Fs, name string) error {
 	fs.Mkdir(name, 0755)
 	dirs := []string{ApplicationDir, EntityDir, RepositoryDir, PersistenceDir, http}
 	for _, dir := range dirs {
-		if err := fs.Mkdir(path.Join(name, dir), 0755); err != nil {
+		if err := fs.MkdirAll(path.Join(name, dir), 0755); err != nil {
 			return err
 		}
 	}
@@ -106,6 +106,8 @@ func replaceStub(content string, name string) string {
 	content = strings.Replace(content, "{{TitleName}}", Title(name), -1)
 	content = strings.Replace(content, "{{PluralLowerName}}", Lower(Plural(name)), -1)
 	content = strings.Replace(content, "{{SingularLowerName}}", Lower(Singular(name)), -1)
+	content = strings.Replace(content, "{{SingularCapitalName}}", UpperCamelCase(Singular(name)), -1)
+	content = strings.Replace(content, "{{PluralCapitalName}}", UpperCamelCase(Plural(name)), -1)
 	content = strings.Replace(content, "{{AppName}}", AppName, -1)
 	content = strings.Replace(content, "{{AppRoot}}", AppRoot, -1)
 	return content
@@ -127,4 +129,7 @@ func Lower(name string) string {
 
 func Title(name string) string {
 	return strings.Title(Lower(name))
+}
+func UpperCamelCase(name string) string {
+	return strings.Title(name)
 }

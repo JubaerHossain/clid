@@ -2,12 +2,12 @@ package repository
 
 import "{{AppName}}/{{AppRoot}}/{{SingularLowerName}}/domain/entity"
 
-// CategoryRepository defines methods for user data access
-type CategoryRepository interface {
-	GetCategories(queryValues map[string][]string) ([]*entity.ResponseCategory, error)
-	GetCategoryByID(categoryID uint) (*entity.Category, error)
-	GetCategory(categoryID uint) (*entity.ResponseCategory, error)
-	CreateCategory(category *entity.Category) (*entity.Category, error)
-	UpdateCategory(oldCategory *entity.Category, category *entity.UpdateCategory) (*entity.Category, error)
-	DeleteCategory(category *entity.Category) error
+// {{SingularCapitalName}}Repository defines methods for user data access
+type {{SingularCapitalName}}Repository interface {
+	Get{{PluralCapitalName}}(queryValues map[string][]string) ([]*entity.Response{{SingularCapitalName}}, error)
+	Get{{SingularCapitalName}}ByID({{SingularLowerName}}ID uint) (*entity.{{SingularCapitalName}}, error)
+	Get{{SingularCapitalName}}({{SingularLowerName}}ID uint) (*entity.Response{{SingularCapitalName}}, error)
+	Create{{SingularCapitalName}}({{SingularLowerName}} *entity.{{SingularCapitalName}}) (*entity.{{SingularCapitalName}}, error)
+	Update{{SingularCapitalName}}(old{{SingularCapitalName}} *entity.{{SingularCapitalName}}, {{SingularLowerName}} *entity.Update{{SingularCapitalName}}) (*entity.{{SingularCapitalName}}, error)
+	Delete{{SingularCapitalName}}({{SingularLowerName}} *entity.{{SingularCapitalName}}) error
 }

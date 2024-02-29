@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"{{AppName}}/{{AppRoot}}/{{SingularLowerName}}/domain/entity"
-	"{{AppName}}/{{AppRoot}}/{{SingularLowerName}}/domain/entity"
+	"{{AppName}}/{{AppRoot}}/{{SingularLowerName}}/domain/repository"
 	"{{AppName}}/{{AppRoot}}/core/database"
 	"{{AppName}}/{{AppRoot}}/core/logger"
 	utilQuery "{{AppName}}/{{AppRoot}}/core/pkg/query"
@@ -12,25 +12,25 @@ import (
 	"gorm.io/gorm"
 )
 
-type CategoryRepositoryImpl struct {
+type {{SingularCapitalName}}RepositoryImpl struct {
 	// Add fields for database connection or any other dependencies
 	db *gorm.DB
 }
 
-func NewCategoryRepository() (repository.CategoryRepository, error) {
+func New{{SingularCapitalName}}Repository() (repository.{{SingularCapitalName}}Repository, error) {
 	conn, err := database.ConnectDB()
 	if err != nil {
 		logger.Error("Failed to connect to database", zap.Error(err))
 		return nil, err
 	}
-	return &CategoryRepositoryImpl{db: conn}, nil
+	return &{{SingularCapitalName}}RepositoryImpl{db: conn}, nil
 }
 
 // GetCategories returns all categories from the database
-func (r *CategoryRepositoryImpl) GetCategories(queryValues map[string][]string) ([]*entity.ResponseCategory, error) {
+func (r *{{SingularCapitalName}}RepositoryImpl) GetCategories(queryValues map[string][]string) ([]*entity.Response{{SingularCapitalName}}, error) {
 	// Implement logic to get all categories
-	users := []*entity.ResponseCategory{}
-	query := r.db.Model(&entity.Category{})
+	users := []*entity.Response{{SingularCapitalName}}{}
+	query := r.db.Model(&entity.{{SingularCapitalName}}{})
 
 	// Filter by name
 	if names, ok := queryValues["name"]; ok && len(names) > 0 {
@@ -65,52 +65,52 @@ func (r *CategoryRepositoryImpl) GetCategories(queryValues map[string][]string) 
 	return users, nil
 }
 
-// GetCategoryByID returns a category by ID from the database
-func (r *CategoryRepositoryImpl) GetCategoryByID(categoryID uint) (*entity.Category, error) {
-	// Implement logic to get category by ID
-	category := &entity.Category{}
-	if err := r.db.First(&category, categoryID).Error; err != nil {
-		return nil, fmt.Errorf("category not found")
+// Get{{SingularCapitalName}}ByID returns a {{SingularLowerName}} by ID from the database
+func (r *{{SingularCapitalName}}RepositoryImpl) Get{{SingularCapitalName}}ByID({{SingularLowerName}}ID uint) (*entity.{{SingularCapitalName}}, error) {
+	// Implement logic to get {{SingularLowerName}} by ID
+	{{SingularLowerName}} := &entity.{{SingularCapitalName}}{}
+	if err := r.db.First(&{{SingularLowerName}}, {{SingularLowerName}}ID).Error; err != nil {
+		return nil, fmt.Errorf("{{SingularLowerName}} not found")
 	}
-	return category, nil
+	return {{SingularLowerName}}, nil
 }
-func (r *CategoryRepositoryImpl) GetCategory(categoryID uint) (*entity.ResponseCategory, error) {
-	// Implement logic to get category by ID
-	category := &entity.ResponseCategory{}
-	query := r.db.Model(&entity.Category{}).Where("id = ?", categoryID)
-	if err := query.First(&category).Error; err != nil {
-		return nil, fmt.Errorf("category not found")
+func (r *{{SingularCapitalName}}RepositoryImpl) Get{{SingularCapitalName}}({{SingularLowerName}}ID uint) (*entity.Response{{SingularCapitalName}}, error) {
+	// Implement logic to get {{SingularLowerName}} by ID
+	{{SingularLowerName}} := &entity.Response{{SingularCapitalName}}{}
+	query := r.db.Model(&entity.{{SingularCapitalName}}{}).Where("id = ?", {{SingularLowerName}}ID)
+	if err := query.First(&{{SingularLowerName}}).Error; err != nil {
+		return nil, fmt.Errorf("{{SingularLowerName}} not found")
 	}
-	return category, nil
+	return {{SingularLowerName}}, nil
 }
 
-// CreateCategory saves a new category to the database
-func (r *CategoryRepositoryImpl) CreateCategory(category *entity.Category) (*entity.Category, error) {
-	// Implement logic to save category
-	if err := r.db.Create(category).Error; err != nil {
+// Create{{SingularCapitalName}} saves a new {{SingularLowerName}} to the database
+func (r *{{SingularCapitalName}}RepositoryImpl) Create{{SingularCapitalName}}({{SingularLowerName}} *entity.{{SingularCapitalName}}) (*entity.{{SingularCapitalName}}, error) {
+	// Implement logic to save {{SingularLowerName}}
+	if err := r.db.Create({{SingularLowerName}}).Error; err != nil {
 		return nil, err
 	}
-	return category, nil
+	return {{SingularLowerName}}, nil
 }
 
-// UpdateCategory updates a category in the database
-func (r *CategoryRepositoryImpl) UpdateCategory(oldCategory *entity.Category, category *entity.UpdateCategory) (*entity.Category, error) {
-	if err := r.db.Model(&oldCategory).Updates(category).Error; err != nil {
+// Update{{SingularCapitalName}} updates a {{SingularLowerName}} in the database
+func (r *{{SingularCapitalName}}RepositoryImpl) Update{{SingularCapitalName}}(old{{SingularCapitalName}} *entity.{{SingularCapitalName}}, {{SingularLowerName}} *entity.Update{{SingularCapitalName}}) (*entity.{{SingularCapitalName}}, error) {
+	if err := r.db.Model(&old{{SingularCapitalName}}).Updates({{SingularLowerName}}).Error; err != nil {
 		return nil, err
 	}
-	updateCategory := &entity.Category{}
+	update{{SingularCapitalName}} := &entity.{{SingularCapitalName}}{}
 
-	if err := r.db.First(&updateCategory, oldCategory.ID).Error; err != nil {
+	if err := r.db.First(&update{{SingularCapitalName}}, old{{SingularCapitalName}}.ID).Error; err != nil {
 		return nil, err
 	}
-	return updateCategory, nil
+	return update{{SingularCapitalName}}, nil
 }
 
-// DeleteCategory deletes a category from the database
+// Delete{{SingularCapitalName}} deletes a {{SingularLowerName}} from the database
 
-func (r *CategoryRepositoryImpl) DeleteCategory(category *entity.Category) error {
-	// Implement logic to delete category
-	if err := r.db.Delete(category).Error; err != nil {
+func (r *{{SingularCapitalName}}RepositoryImpl) Delete{{SingularCapitalName}}({{SingularLowerName}} *entity.{{SingularCapitalName}}) error {
+	// Implement logic to delete {{SingularLowerName}}
+	if err := r.db.Delete({{SingularLowerName}}).Error; err != nil {
 		return err
 	}
 	return nil

@@ -11,11 +11,11 @@ func SetupCategoryRoutes(router *http.ServeMux) *http.ServeMux {
 
 	// auth routes
 
-	router.Handle("GET /categories", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(GetCategories))))
-	router.Handle("POST /categories", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(CreateCategory))))
-	router.Handle("GET /categories/{id}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(GetCategory))))
-	router.Handle("PUT /categories/{id}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(UpdateCategory))))
-	router.Handle("DELETE /categories/{id}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(DeleteCategory))))
+	router.Handle("GET /{{SingularLowerName}}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(Get{{PluralCapitalName}}))))
+	router.Handle("POST /{{SingularLowerName}}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(Create{{SingularCapitalName}}))))
+	router.Handle("GET /{{SingularLowerName}}/{id}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(Get{{SingularCapitalName}}))))
+	router.Handle("PUT /{{SingularLowerName}}/{id}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(Update{{SingularCapitalName}}))))
+	router.Handle("DELETE /{{SingularLowerName}}/{id}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(Delete{{SingularCapitalName}}))))
 
 	return router
 }

@@ -9,103 +9,103 @@ import (
 	"{{AppName}}/{{AppRoot}}/{{SingularLowerName}}/infrastructure/persistence"
 )
 
-func GetCategories(r *http.Request) ([]*entity.ResponseCategory, error) {
+func Get{{PluralCapitalName}}(r *http.Request) ([]*entity.Response{{SingularCapitalName}}, error) {
 	// Call repository to get all users
 	queryValues := r.URL.Query()
-	repo, err := persistence.NewCategoryRepository()
+	repo, err := persistence.New{{SingularCapitalName}}Repository()
 	if err != nil {
 		return nil, err
 	}
-	categories, userErr := repo.GetCategories(queryValues)
+	categories, userErr := repo.Get{{PluralCapitalName}}(queryValues)
 	if userErr != nil {
 		return nil, userErr
 	}
 	return categories, nil
 }
 
-// CreateCategory creates a new category
-func CreateCategory(category *entity.Category) (*entity.Category, error) {
-	// Add any validation or business logic here before creating the category
+// Create{{SingularCapitalName}} creates a new {{SingularLowerName}}
+func Create{{SingularCapitalName}}({{SingularLowerName}} *entity.{{SingularCapitalName}}) (*entity.{{SingularCapitalName}}, error) {
+	// Add any validation or business logic here before creating the {{SingularLowerName}}
 
-	repo, err := persistence.NewCategoryRepository()
+	repo, err := persistence.New{{SingularCapitalName}}Repository()
 	if err != nil {
 		return nil, err
 	}
 
-	category, err2 := repo.CreateCategory(category)
+	{{SingularLowerName}}, err2 := repo.Create{{SingularCapitalName}}({{SingularLowerName}})
 	if err2 != nil {
 		return nil, err2
 	}
-	return category, nil
+	return {{SingularLowerName}}, nil
 }
 
 // GetUserByID retrieves a user by ID
-func GetCategory(r *http.Request) (*entity.ResponseCategory, error) {
+func Get{{SingularCapitalName}}(r *http.Request) (*entity.Response{{SingularCapitalName}}, error) {
 	// Call repository to get user by ID
-	repo, err := persistence.NewCategoryRepository()
+	repo, err := persistence.New{{SingularCapitalName}}Repository()
 	if err != nil {
 		return nil, err
 	}
 	id, err := strconv.ParseUint(r.PathValue("id"), 10, 64)
 	if err != nil {
-		return nil, fmt.Errorf("invalid category ID")
+		return nil, fmt.Errorf("invalid {{SingularLowerName}} ID")
 	}
-	category, categoryErr := repo.GetCategory(uint(id))
-	if categoryErr != nil {
-		return nil, categoryErr
+	{{SingularLowerName}}, {{SingularLowerName}}Err := repo.Get{{SingularCapitalName}}(uint(id))
+	if {{SingularLowerName}}Err != nil {
+		return nil, {{SingularLowerName}}Err
 	}
-	return category, nil
+	return {{SingularLowerName}}, nil
 }
-func GetCategoryByID(r *http.Request) (*entity.Category, error) {
+func Get{{SingularCapitalName}}ByID(r *http.Request) (*entity.{{SingularCapitalName}}, error) {
 	// Call repository to get user by ID
-	repo, err := persistence.NewCategoryRepository()
+	repo, err := persistence.New{{SingularCapitalName}}Repository()
 	if err != nil {
 		return nil, err
 	}
 	id, err := strconv.ParseUint(r.PathValue("id"), 10, 64)
 	if err != nil {
-		return nil, fmt.Errorf("invalid category ID")
+		return nil, fmt.Errorf("invalid {{SingularLowerName}} ID")
 	}
-	category, categoryErr := repo.GetCategoryByID(uint(id))
-	if categoryErr != nil {
-		return nil, categoryErr
+	{{SingularLowerName}}, {{SingularLowerName}}Err := repo.Get{{SingularCapitalName}}ByID(uint(id))
+	if {{SingularLowerName}}Err != nil {
+		return nil, {{SingularLowerName}}Err
 	}
-	return category, nil
+	return {{SingularLowerName}}, nil
 }
 
 // UpdateUser updates an existing user
-func UpdateCategory(r *http.Request, category *entity.UpdateCategory) (*entity.Category, error) {
-	// Call repository to update category
+func Update{{SingularCapitalName}}(r *http.Request, {{SingularLowerName}} *entity.Update{{SingularCapitalName}}) (*entity.{{SingularCapitalName}}, error) {
+	// Call repository to update {{SingularLowerName}}
 
-	old, err := GetCategoryByID(r)
+	old, err := Get{{SingularCapitalName}}ByID(r)
 	if err != nil {
 		return nil, err
 	}
-	repo, err := persistence.NewCategoryRepository()
+	repo, err := persistence.New{{SingularCapitalName}}Repository()
 	if err != nil {
 		return nil, err
 	}
 
-	updateCategory, err2 := repo.UpdateCategory(old, category)
+	update{{SingularCapitalName}}, err2 := repo.Update{{SingularCapitalName}}(old, {{SingularLowerName}})
 	if err2 != nil {
 		return nil, err2
 	}
-	return updateCategory, nil
+	return update{{SingularCapitalName}}, nil
 }
 
-// DeleteCategory deletes a user by ID
-func DeleteCategory(r *http.Request) error {
+// Delete{{SingularCapitalName}} deletes a user by ID
+func Delete{{SingularCapitalName}}(r *http.Request) error {
 	// Call repository to delete user
-	user, err := GetCategoryByID(r)
+	user, err := Get{{SingularCapitalName}}ByID(r)
 	if err != nil {
 		return err
 	}
-	repo, err := persistence.NewCategoryRepository()
+	repo, err := persistence.New{{SingularCapitalName}}Repository()
 	if err != nil {
 		return err
 	}
 
-	err2 := repo.DeleteCategory(user)
+	err2 := repo.Delete{{SingularCapitalName}}(user)
 	if err2 != nil {
 		return err2
 	}
