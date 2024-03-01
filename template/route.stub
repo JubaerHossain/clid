@@ -7,15 +7,15 @@ import (
 )
 
 // SetupUserRoutes initializes and returns the HTTP router with user routes.
-func SetupCategoryRoutes(router *http.ServeMux) *http.ServeMux {
+func Setup{{SingularCapitalName}}Routes(router *http.ServeMux) *http.ServeMux {
 
 	// auth routes
 
-	router.Handle("GET /{{SingularLowerName}}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(Get{{PluralCapitalName}}))))
-	router.Handle("POST /{{SingularLowerName}}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(Create{{SingularCapitalName}}))))
-	router.Handle("GET /{{SingularLowerName}}/{id}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(Get{{SingularCapitalName}}))))
-	router.Handle("PUT /{{SingularLowerName}}/{id}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(Update{{SingularCapitalName}}))))
-	router.Handle("DELETE /{{SingularLowerName}}/{id}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(Delete{{SingularCapitalName}}))))
+	router.Handle("GET /{{PluralLowerName}}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(Get{{PluralCapitalName}}))))
+	router.Handle("POST /{{PluralLowerName}}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(Create{{SingularCapitalName}}))))
+	router.Handle("GET /{{PluralLowerName}}/{id}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(Get{{SingularCapitalName}}))))
+	router.Handle("PUT /{{PluralLowerName}}/{id}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(Update{{SingularCapitalName}}))))
+	router.Handle("DELETE /{{PluralLowerName}}/{id}", middleware.LimiterMiddleware(middleware.Authenticate(http.HandlerFunc(Delete{{SingularCapitalName}}))))
 
 	return router
 }

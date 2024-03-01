@@ -26,9 +26,9 @@ func New{{SingularCapitalName}}Repository() (repository.{{SingularCapitalName}}R
 	return &{{SingularCapitalName}}RepositoryImpl{db: conn}, nil
 }
 
-// GetCategories returns all categories from the database
-func (r *{{SingularCapitalName}}RepositoryImpl) GetCategories(queryValues map[string][]string) ([]*entity.Response{{SingularCapitalName}}, error) {
-	// Implement logic to get all categories
+// Get{{PluralCapitalName}} returns all {{PluralLowerName}} from the database
+func (r *{{SingularCapitalName}}RepositoryImpl) Get{{PluralCapitalName}}(queryValues map[string][]string) ([]*entity.Response{{SingularCapitalName}}, error) {
+	// Implement logic to get all {{PluralLowerName}}
 	users := []*entity.Response{{SingularCapitalName}}{}
 	query := r.db.Model(&entity.{{SingularCapitalName}}{})
 
