@@ -52,12 +52,9 @@ func (r *{{SingularCapitalName}}RepositoryImpl) Get{{PluralCapitalName}}(queryVa
 		query = query.Where("created_at BETWEEN ? AND ?", dateRange[0], dateRange[1])
 	}
 	// orderBy
-	if conditions, ok := queryValues["orderBy"]; ok && len(conditions) > 0 {
-		query = query.Order(conditions[0])
-
-	} else {
-		query = query.Order("created_at desc")
-	} // Filter
+	order := utilQuery.OrderBy(queryValues)
+	query = query.Order(order)
+	// Filter
 	paginate := utilQuery.Pagination(query, queryValues) // Pagination
 	if err := paginate.Find(&users).Error; err != nil {
 		return nil, err

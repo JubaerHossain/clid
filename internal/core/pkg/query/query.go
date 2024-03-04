@@ -2,11 +2,12 @@ package utilQuery
 
 import (
 	"encoding/json"
+	"math"
 	"net/http"
 	"net/url"
 	"strconv"
 
-	"github.com/JubaerHossain/golang-ddd/internal/core/pkg/utils"
+	"github.com/JubaerHossain/restaurant-golang/internal/core/pkg/utils"
 	"github.com/go-playground/validator/v10"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -31,6 +32,26 @@ func Pagination(query *gorm.DB, queryValues map[string][]string) *gorm.DB {
 
 	return query
 
+}
+
+func RawPagination(sqlQuery string, queryValues map[string][]string) string {
+	q := url.Values(queryValues)
+	page, _ := strconv.Atoi(q.Get("page"))
+	if page <= 0 {
+		page = 1
+	}
+
+	pageSize, _ := strconv.Atoi(q.Get("pageSize"))
+	switch {
+	case pageSize <= 0:
+		pageSize = 10
+	}
+
+	offset := (page - 1) * pageSize
+
+	sqlQuery += " LIMIT " + strconv.Itoa(pageSize) + " OFFSET " + strconv.Itoa(offset)
+
+	return sqlQuery
 }
 
 func HashPassword(password string) (string, error) {
@@ -62,4 +83,30 @@ func BodyParse(s interface{}, w http.ResponseWriter, r *http.Request, isValidati
 		}
 	}
 	return nil
+}
+
+func Round(num float64, places int) float64 {
+	if places < 0 {
+		panic("places cannot be negative")
+	}
+	pow := math.Pow(10, float64(places))
+	rounded := math.Round(num*pow) / pow
+	return rounded
+}
+
+func OrderBy(queryValues map[string][]string) (string) {
+	q := url.Values(queryValues)
+	orderBy := "created_at"
+	if conditions, ok := q["orderBy"]; ok && len(conditions) > 0 {
+		orderBy = conditions[0]
+	}
+
+	sortOrder := "asc"
+	if conditions, ok := q["sortBy"]; ok && len(conditions) > 0 {
+		sortOrder = conditions[0]
+	}
+
+	orderBy = orderBy + " " + sortOrder
+
+	return orderBy
 }
