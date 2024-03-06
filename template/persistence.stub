@@ -29,7 +29,7 @@ func New{{SingularCapitalName}}Repository() (repository.{{SingularCapitalName}}R
 // Get{{PluralCapitalName}} returns all {{PluralLowerName}} from the database
 func (r *{{SingularCapitalName}}RepositoryImpl) Get{{PluralCapitalName}}(queryValues map[string][]string) ([]*entity.Response{{SingularCapitalName}}, error) {
 	// Implement logic to get all {{PluralLowerName}}
-	users := []*entity.Response{{SingularCapitalName}}{}
+	{{PluralLowerName}} := []*entity.Response{{SingularCapitalName}}{}
 	query := r.db.Model(&entity.{{SingularCapitalName}}{})
 
 	// Filter by name
@@ -56,10 +56,10 @@ func (r *{{SingularCapitalName}}RepositoryImpl) Get{{PluralCapitalName}}(queryVa
 	query = query.Order(order)
 	// Filter
 	paginate := utilQuery.Pagination(query, queryValues) // Pagination
-	if err := paginate.Find(&users).Error; err != nil {
+	if err := paginate.Find(&{{PluralLowerName}}).Error; err != nil {
 		return nil, err
 	}
-	return users, nil
+	return {{PluralLowerName}}, nil
 }
 
 // Get{{SingularCapitalName}}ByID returns a {{SingularLowerName}} by ID from the database

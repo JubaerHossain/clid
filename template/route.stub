@@ -6,7 +6,7 @@ import (
 	"{{AppName}}/{{AppRoot}}/core/middleware"
 )
 
-// SetupUserRoutes initializes and returns the HTTP router with user routes.
+// Setup{{SingularCapitalName}}Routes initializes and returns the HTTP router with {{SingularLowerName}} routes.
 func Setup{{SingularCapitalName}}Routes(router *http.ServeMux) *http.ServeMux {
 
 	// auth routes

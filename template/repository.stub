@@ -2,7 +2,7 @@ package repository
 
 import "{{AppName}}/{{AppRoot}}/{{SingularLowerName}}/domain/entity"
 
-// {{SingularCapitalName}}Repository defines methods for user data access
+// {{SingularCapitalName}}Repository defines methods for {{SingularLowerName}} data access
 type {{SingularCapitalName}}Repository interface {
 	Get{{PluralCapitalName}}(queryValues map[string][]string) ([]*entity.Response{{SingularCapitalName}}, error)
 	Get{{SingularCapitalName}}ByID({{SingularLowerName}}ID uint) (*entity.{{SingularCapitalName}}, error)

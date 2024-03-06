@@ -10,17 +10,17 @@ import (
 )
 
 func Get{{PluralCapitalName}}(r *http.Request) ([]*entity.Response{{SingularCapitalName}}, error) {
-	// Call repository to get all users
+	// Call repository to get all {{PluralLowerName}}
 	queryValues := r.URL.Query()
 	repo, err := persistence.New{{SingularCapitalName}}Repository()
 	if err != nil {
 		return nil, err
 	}
-	categories, userErr := repo.Get{{PluralCapitalName}}(queryValues)
-	if userErr != nil {
-		return nil, userErr
+	{{PluralLowerName}}, {{SingularLowerName}}Err := repo.Get{{PluralCapitalName}}(queryValues)
+	if {{SingularLowerName}}Err != nil {
+		return nil, {{SingularLowerName}}Err
 	}
-	return categories, nil
+	return {{PluralLowerName}}, nil
 }
 
 // Create{{SingularCapitalName}} creates a new {{SingularLowerName}}
@@ -39,9 +39,9 @@ func Create{{SingularCapitalName}}({{SingularLowerName}} *entity.{{SingularCapit
 	return {{SingularLowerName}}, nil
 }
 
-// GetUserByID retrieves a user by ID
+// Get{{SingularCapitalName}}ByID retrieves a {{SingularLowerName}} by ID
 func Get{{SingularCapitalName}}(r *http.Request) (*entity.Response{{SingularCapitalName}}, error) {
-	// Call repository to get user by ID
+	// Call repository to get {{SingularLowerName}} by ID
 	repo, err := persistence.New{{SingularCapitalName}}Repository()
 	if err != nil {
 		return nil, err
@@ -57,7 +57,7 @@ func Get{{SingularCapitalName}}(r *http.Request) (*entity.Response{{SingularCapi
 	return {{SingularLowerName}}, nil
 }
 func Get{{SingularCapitalName}}ByID(r *http.Request) (*entity.{{SingularCapitalName}}, error) {
-	// Call repository to get user by ID
+	// Call repository to get {{SingularLowerName}} by ID
 	repo, err := persistence.New{{SingularCapitalName}}Repository()
 	if err != nil {
 		return nil, err
@@ -73,7 +73,7 @@ func Get{{SingularCapitalName}}ByID(r *http.Request) (*entity.{{SingularCapitalN
 	return {{SingularLowerName}}, nil
 }
 
-// UpdateUser updates an existing user
+// Update{{SingularCapitalName}} updates an existing {{SingularLowerName}}
 func Update{{SingularCapitalName}}(r *http.Request, {{SingularLowerName}} *entity.Update{{SingularCapitalName}}) (*entity.{{SingularCapitalName}}, error) {
 	// Call repository to update {{SingularLowerName}}
 
@@ -93,10 +93,10 @@ func Update{{SingularCapitalName}}(r *http.Request, {{SingularLowerName}} *entit
 	return update{{SingularCapitalName}}, nil
 }
 
-// Delete{{SingularCapitalName}} deletes a user by ID
+// Delete{{SingularCapitalName}} deletes a {{SingularLowerName}} by ID
 func Delete{{SingularCapitalName}}(r *http.Request) error {
-	// Call repository to delete user
-	user, err := Get{{SingularCapitalName}}ByID(r)
+	// Call repository to delete {{SingularLowerName}}
+	{{SingularLowerName}}, err := Get{{SingularCapitalName}}ByID(r)
 	if err != nil {
 		return err
 	}
@@ -105,7 +105,7 @@ func Delete{{SingularCapitalName}}(r *http.Request) error {
 		return err
 	}
 
-	err2 := repo.Delete{{SingularCapitalName}}(user)
+	err2 := repo.Delete{{SingularCapitalName}}({{SingularLowerName}})
 	if err2 != nil {
 		return err2
 	}

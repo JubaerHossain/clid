@@ -50,7 +50,7 @@ func Create{{SingularCapitalName}}(w http.ResponseWriter, r *http.Request) {
 }
 
 func Get{{SingularCapitalName}}(w http.ResponseWriter, r *http.Request) {
-	// Implement GetUserByID handler
+	// Implement Get{{SingularCapitalName}}ByID handler
 	var {{SingularLowerName}} *entity.Response{{SingularCapitalName}}
 	{{SingularLowerName}}, err := application.Get{{SingularCapitalName}}(r)
 	if err != nil {
