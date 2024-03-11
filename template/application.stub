@@ -95,10 +95,6 @@ func (c *App) Delete{{SingularCapitalName}}(r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	repo, err := persistence.New{{SingularCapitalName}}Repository()
-	if err != nil {
-		return err
-	}
 
 	err2 := c.repo.Delete{{SingularCapitalName}}({{SingularLowerName}})
 	if err2 != nil {
