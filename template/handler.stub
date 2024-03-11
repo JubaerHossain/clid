@@ -2,19 +2,31 @@ package hanlder
 
 import (
 	"net/http"
-
 	"{{AppName}}/{{AppRoot}}/{{SingularLowerName}}/application"
 	"{{AppName}}/{{AppRoot}}/{{SingularLowerName}}/domain/entity"
 	"{{AppName}}/{{AppRoot}}/core/logger"
 	utilQuery "{{AppName}}/{{AppRoot}}/core/pkg/query"
 	"{{AppName}}/{{AppRoot}}/core/pkg/utils"
+	"{{AppName}}/{{AppRoot}}/core/cache"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
-func Get{{PluralCapitalName}}(w http.ResponseWriter, r *http.Request) {
+type Handler struct {
+	App *application.App
+}
+
+// NewHandler creates a new instance of Handler with the given dependencies.
+func NewHandler(db *gorm.DB, cacheService cache.CacheService) *Handler {
+	return &Handler{
+		App: application.AppInterface(db, cacheService),
+	}
+}
+
+func (h *Handler) Get{{PluralCapitalName}}(w http.ResponseWriter, r *http.Request) {
 	// Implement Get{{PluralCapitalName}} handler
 	var {{PluralLowerName}} []*entity.Response{{SingularCapitalName}}
-	{{PluralLowerName}}, err := application.Get{{PluralCapitalName}}(r)
+	{{PluralLowerName}}, err := h.App.Get{{PluralCapitalName}}(r)
 	if err != nil {
 		logger.Error("Failed to fetch {{PluralLowerName}}", zap.Error(err))
 		utils.WriteJSONError(w, http.StatusInternalServerError, "Failed to fetch {{PluralLowerName}}")
@@ -27,7 +39,7 @@ func Get{{PluralCapitalName}}(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func Create{{SingularCapitalName}}(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Create{{SingularCapitalName}}(w http.ResponseWriter, r *http.Request) {
 	// Implement Create{{SingularCapitalName}} handler
 	var new{{SingularCapitalName}} entity.{{SingularCapitalName}}
 
@@ -37,7 +49,7 @@ func Create{{SingularCapitalName}}(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Call the Create{{SingularCapitalName}} function to create the {{SingularCapitalName}}
-	_, err := application.Create{{SingularCapitalName}}(&new{{SingularCapitalName}})
+	_, err := h.App.Create{{SingularCapitalName}}(&new{{SingularCapitalName}})
 	if err != nil {
 		utils.WriteJSONError(w, http.StatusInternalServerError, "Failed to create {{SingularLowerName}}")
 		return
@@ -49,10 +61,10 @@ func Create{{SingularCapitalName}}(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func Get{{SingularCapitalName}}(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Get{{SingularCapitalName}}(w http.ResponseWriter, r *http.Request) {
 	// Implement Get{{SingularCapitalName}}ByID handler
 	var {{SingularLowerName}} *entity.Response{{SingularCapitalName}}
-	{{SingularLowerName}}, err := application.Get{{SingularCapitalName}}(r)
+	{{SingularLowerName}}, err := h.App.Get{{SingularCapitalName}}(r)
 	if err != nil {
 		utils.WriteJSONError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -65,7 +77,7 @@ func Get{{SingularCapitalName}}(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func Update{{SingularCapitalName}}(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Update{{SingularCapitalName}}(w http.ResponseWriter, r *http.Request) {
 	// Implement Update{{SingularCapitalName}} handler
 	var update{{SingularCapitalName}} entity.Update{{SingularCapitalName}}
 	pareErr := utilQuery.BodyParse(&update{{SingularCapitalName}}, w, r, true) // Parse request body and validate it
@@ -74,7 +86,7 @@ func Update{{SingularCapitalName}}(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Call the Create{{SingularCapitalName}} function to create the {{SingularLowerName}}
-	_, err := application.Update{{SingularCapitalName}}(r, &update{{SingularCapitalName}})
+	_, err := h.App.Update{{SingularCapitalName}}(r, &update{{SingularCapitalName}})
 	if err != nil {
 		utils.WriteJSONError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -86,9 +98,9 @@ func Update{{SingularCapitalName}}(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func Delete{{SingularCapitalName}}(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Delete{{SingularCapitalName}}(w http.ResponseWriter, r *http.Request) {
 	// Implement Delete{{SingularCapitalName}} handler
-	err := application.Delete{{SingularCapitalName}}(r)
+	err := h.App.Delete{{SingularCapitalName}}(r)
 	if err != nil {
 		utils.WriteJSONError(w, http.StatusInternalServerError, err.Error())
 		return

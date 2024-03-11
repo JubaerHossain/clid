@@ -2,7 +2,7 @@ package persistence
 
 import (
 	"fmt"
-
+    "{{AppName}}/{{AppRoot}}/core/cache"
 	"{{AppName}}/{{AppRoot}}/{{SingularLowerName}}/domain/entity"
 	"{{AppName}}/{{AppRoot}}/{{SingularLowerName}}/domain/repository"
 	"{{AppName}}/{{AppRoot}}/core/database"
@@ -15,15 +15,14 @@ import (
 type {{SingularCapitalName}}RepositoryImpl struct {
 	// Add fields for database connection or any other dependencies
 	db *gorm.DB
+	cache cache.CacheService
 }
 
-func New{{SingularCapitalName}}Repository() (repository.{{SingularCapitalName}}Repository, error) {
-	conn, err := database.ConnectDB()
-	if err != nil {
-		logger.Error("Failed to connect to database", zap.Error(err))
-		return nil, err
+func New{{SingularCapitalName}}Repository(db *gorm.DB, cacheService cache.CacheService) (repository.{{SingularCapitalName}}Repository, error) {
+	return &UserRepositoryImpl{
+		db:    db,
+		cache: cacheService,
 	}
-	return &{{SingularCapitalName}}RepositoryImpl{db: conn}, nil
 }
 
 // Get{{PluralCapitalName}} returns all {{PluralLowerName}} from the database

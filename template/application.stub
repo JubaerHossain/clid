@@ -4,19 +4,32 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-
+    "{{AppName}}/{{AppRoot}}/core/cache"
 	"{{AppName}}/{{AppRoot}}/{{SingularLowerName}}/domain/entity"
 	"{{AppName}}/{{AppRoot}}/{{SingularLowerName}}/infrastructure/persistence"
+	"gorm.io/gorm"
 )
 
-func Get{{PluralCapitalName}}(r *http.Request) ([]*entity.Response{{SingularCapitalName}}, error) {
+type App struct {
+	db    *gorm.DB
+	cache cache.CacheService
+	repo  repository.{{SingularCapitalName}}Repository
+}
+
+func AppInterface(db *gorm.DB, cacheService cache.CacheService) *App {
+	repo := persistence.New{{SingularCapitalName}}Repository(db, cacheService)
+	return &App{
+		db:    db,
+		cache: cacheService,
+		repo:  repo,
+	}
+}
+
+func (c *App) Get{{PluralCapitalName}}(r *http.Request) ([]*entity.Response{{SingularCapitalName}}, error) {
 	// Call repository to get all {{PluralLowerName}}
 	queryValues := r.URL.Query()
-	repo, err := persistence.New{{SingularCapitalName}}Repository()
-	if err != nil {
-		return nil, err
-	}
-	{{PluralLowerName}}, {{SingularLowerName}}Err := repo.Get{{PluralCapitalName}}(queryValues)
+	
+	{{PluralLowerName}}, {{SingularLowerName}}Err := c.repo.Get{{PluralCapitalName}}(queryValues)
 	if {{SingularLowerName}}Err != nil {
 		return nil, {{SingularLowerName}}Err
 	}
@@ -24,15 +37,10 @@ func Get{{PluralCapitalName}}(r *http.Request) ([]*entity.Response{{SingularCapi
 }
 
 // Create{{SingularCapitalName}} creates a new {{SingularLowerName}}
-func Create{{SingularCapitalName}}({{SingularLowerName}} *entity.{{SingularCapitalName}}) (*entity.{{SingularCapitalName}}, error) {
+func (c *App) Create{{SingularCapitalName}}({{SingularLowerName}} *entity.{{SingularCapitalName}}) (*entity.{{SingularCapitalName}}, error) {
 	// Add any validation or business logic here before creating the {{SingularLowerName}}
 
-	repo, err := persistence.New{{SingularCapitalName}}Repository()
-	if err != nil {
-		return nil, err
-	}
-
-	{{SingularLowerName}}, err2 := repo.Create{{SingularCapitalName}}({{SingularLowerName}})
+	{{SingularLowerName}}, err2 := c.repo.Create{{SingularCapitalName}}({{SingularLowerName}})
 	if err2 != nil {
 		return nil, err2
 	}
@@ -40,33 +48,25 @@ func Create{{SingularCapitalName}}({{SingularLowerName}} *entity.{{SingularCapit
 }
 
 // Get{{SingularCapitalName}}ByID retrieves a {{SingularLowerName}} by ID
-func Get{{SingularCapitalName}}(r *http.Request) (*entity.Response{{SingularCapitalName}}, error) {
-	// Call repository to get {{SingularLowerName}} by ID
-	repo, err := persistence.New{{SingularCapitalName}}Repository()
-	if err != nil {
-		return nil, err
-	}
+func (c *App) Get{{SingularCapitalName}}(r *http.Request) (*entity.Response{{SingularCapitalName}}, error) {
+	// Call repository to get {{SingularLowerName}} by ID	
 	id, err := strconv.ParseUint(r.PathValue("id"), 10, 64)
 	if err != nil {
 		return nil, fmt.Errorf("invalid {{SingularLowerName}} ID")
 	}
-	{{SingularLowerName}}, {{SingularLowerName}}Err := repo.Get{{SingularCapitalName}}(uint(id))
+	{{SingularLowerName}}, {{SingularLowerName}}Err := c.repo.Get{{SingularCapitalName}}(uint(id))
 	if {{SingularLowerName}}Err != nil {
 		return nil, {{SingularLowerName}}Err
 	}
 	return {{SingularLowerName}}, nil
 }
-func Get{{SingularCapitalName}}ByID(r *http.Request) (*entity.{{SingularCapitalName}}, error) {
-	// Call repository to get {{SingularLowerName}} by ID
-	repo, err := persistence.New{{SingularCapitalName}}Repository()
-	if err != nil {
-		return nil, err
-	}
+func (c *App) Get{{SingularCapitalName}}ByID(r *http.Request) (*entity.{{SingularCapitalName}}, error) {
+	// Call repository to get {{SingularLowerName}} by ID	
 	id, err := strconv.ParseUint(r.PathValue("id"), 10, 64)
 	if err != nil {
 		return nil, fmt.Errorf("invalid {{SingularLowerName}} ID")
 	}
-	{{SingularLowerName}}, {{SingularLowerName}}Err := repo.Get{{SingularCapitalName}}ByID(uint(id))
+	{{SingularLowerName}}, {{SingularLowerName}}Err := c.repo.Get{{SingularCapitalName}}ByID(uint(id))
 	if {{SingularLowerName}}Err != nil {
 		return nil, {{SingularLowerName}}Err
 	}
@@ -74,19 +74,14 @@ func Get{{SingularCapitalName}}ByID(r *http.Request) (*entity.{{SingularCapitalN
 }
 
 // Update{{SingularCapitalName}} updates an existing {{SingularLowerName}}
-func Update{{SingularCapitalName}}(r *http.Request, {{SingularLowerName}} *entity.Update{{SingularCapitalName}}) (*entity.{{SingularCapitalName}}, error) {
+func (c *App) Update{{SingularCapitalName}}(r *http.Request, {{SingularLowerName}} *entity.Update{{SingularCapitalName}}) (*entity.{{SingularCapitalName}}, error) {
 	// Call repository to update {{SingularLowerName}}
-
-	old, err := Get{{SingularCapitalName}}ByID(r)
-	if err != nil {
-		return nil, err
-	}
-	repo, err := persistence.New{{SingularCapitalName}}Repository()
+	old, err := c.Get{{SingularCapitalName}}ByID(r)
 	if err != nil {
 		return nil, err
 	}
 
-	update{{SingularCapitalName}}, err2 := repo.Update{{SingularCapitalName}}(old, {{SingularLowerName}})
+	update{{SingularCapitalName}}, err2 := c.repo.Update{{SingularCapitalName}}(old, {{SingularLowerName}})
 	if err2 != nil {
 		return nil, err2
 	}
@@ -94,9 +89,9 @@ func Update{{SingularCapitalName}}(r *http.Request, {{SingularLowerName}} *entit
 }
 
 // Delete{{SingularCapitalName}} deletes a {{SingularLowerName}} by ID
-func Delete{{SingularCapitalName}}(r *http.Request) error {
+func (c *App) Delete{{SingularCapitalName}}(r *http.Request) error {
 	// Call repository to delete {{SingularLowerName}}
-	{{SingularLowerName}}, err := Get{{SingularCapitalName}}ByID(r)
+	{{SingularLowerName}}, err := c.Get{{SingularCapitalName}}ByID(r)
 	if err != nil {
 		return err
 	}
@@ -105,7 +100,7 @@ func Delete{{SingularCapitalName}}(r *http.Request) error {
 		return err
 	}
 
-	err2 := repo.Delete{{SingularCapitalName}}({{SingularLowerName}})
+	err2 := c.repo.Delete{{SingularCapitalName}}({{SingularLowerName}})
 	if err2 != nil {
 		return err2
 	}
